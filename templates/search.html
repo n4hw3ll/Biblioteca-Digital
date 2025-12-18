@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% from '_formhelpers.html' import render_field %}
+
+{% block title %}
+Busqueda Libro
+{% endblock %}
+
+{% block content %}
+<div class="conteiner">
+  <form action="{{ url_for('search') }}" class="ventana" method="POST" style="color: white;">
+    <h3>Buscar Libro por:</h3>
+    {{ render_field(form.text) }}
+    <input type="radio" name="method" id="method1" value="title" checked> Titulo </input>
+    <input type="radio" name="method" id="method2" value="author"> Autor </input>
+    <input type="radio" name="method" id="method3" value="genre"> Genero </input>
+    <input type="submit" value="Buscar">
+  </form>
+</div>
+
+<div class="container mt-4 conteiner">
+  <div class="row g-4">
+    {% for book in booksname %}
+    <div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+      <a href="{{ url_for('bookdetail', book_id=book.id) }}">
+        <img src="{{ url_for('bookcover', cover_path=book.bookcover) }}" class="d-block" alt="Sin Portada"
+          onerror="this.onerror=null; this.src='bookcover/default.png'"
+          style="height: 200px; width: 150px; margin: auto; margin-bottom: 20px; box-shadow: 7px 7px 7px rgba(0, 0, 0, 0.4);">
+        {% set status = book.get_state() %}
+        <div
+          style="margin: auto; text-align: center; background: linear-gradient(to bottom, {{ status.top_color }} 0%, {{ status.bottom_color }} 100%); width: 160px; height: 40px; border-radius: 12px; box-shadow: 7px 7px 7px rgba(0, 0, 0, 0.4);">
+          {{ status.state }}
+        </div>
+      </a>
+    </div>
+    {% endfor %}
+
+  </div>
+</div>
+{% endblock %}

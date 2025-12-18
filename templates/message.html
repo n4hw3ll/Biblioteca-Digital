@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% from '_formhelpers.html' import render_field %}
+
+{% block title %}
+Mensaje
+{% endblock %}
+
+{% block content %}
+    <div class="conteiner" style="color: white;">
+      <h2>{{ message }}</h2>
+      <form action="{{ url_for('index') }}">
+          <input type="submit" value="Volver a Inicio" />
+      </form>
+    </div>
+
+{% endblock %}

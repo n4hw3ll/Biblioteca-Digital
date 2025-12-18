@@ -1,0 +1,92 @@
+{% extends 'base.html' %}
+{% from '_formhelpers.html' import render_field %}
+
+{% block title %}
+Inicio
+{% endblock %}
+
+{% block content %}
+<div class="conteiner">
+  <form action="{{ url_for('search') }}" class="ventana" method="POST" style="color: white;">
+    <h3>Buscar Libro por:</h3>
+    {{ render_field(form.text) }}
+    <input type="radio" name="method" id="method1" value="title" checked> Titulo </input>
+    <input type="radio" name="method" id="method2" value="author"> Autor </input>
+    <input type="radio" name="method" id="method3" value="genre"> Genero </input>
+    <input type="submit" value="Buscar">
+  </form>
+</div>
+
+<div class="container mt-5 conteiner">
+  <div class="conteiner-label">Los 10 Libros mas nuevos</div>
+  <div id="colorCarousel" class="carousel slide" data-bs-ride="false">
+    <div class="carousel-inner">
+      {% for i in range(0, books|length, 6) %}
+      <div class="carousel-item {% if loop.index == 1 %}active{% endif %}">
+        <div class="row p-3">
+          {% for book in books[i:i+6] %}
+          <a href="{{ url_for('bookdetail', book_id=book.id) }}" class="col-12 col-sm-6 col-md-4 col-lg-2 mb-2">
+            <img src="{{ url_for('bookcover', cover_path=book.bookcover) }}" class="d-block" alt="Sin Portada"
+              onerror="this.onerror=null; this.src='bookcover/default.png'"
+              style="height: 200px; width: 150px; margin: auto; margin-bottom: 20px; box-shadow: 7px 7px 7px rgba(0, 0, 0, 0.4);">
+            {% set status = book.get_state() %}
+            <div
+              style="margin: auto; text-align: center; background: linear-gradient(to bottom, {{ status.top_color }} 0%, {{ status.bottom_color }} 100%); width: 160px; height: 40px; border-radius: 12px; box-shadow: 7px 7px 7px rgba(0, 0, 0, 0.4);">
+              {{ status.state }}
+            </div>
+          </a>
+          {% endfor %}
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    <button class="carousel-control-prev" type="button" data-bs-target="#colorCarousel" data-bs-slide="prev">
+      <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+      <span class="visually-hidden">Previous</span>
+    </button>
+    <button class="carousel-control-next" type="button" data-bs-target="#colorCarousel" data-bs-slide="next">
+      <span class="carousel-control-next-icon" aria-hidden="true"></span>
+      <span class="visually-hidden">Next</span>
+    </button>
+  </div>
+</div>
+
+{% for bookquery in randomBooksGenres %}
+<div class="container mt-5 conteiner">
+  <div class="conteiner-label">Libros de genero {{ randomGenres[loop.index0].genre }}</div>
+  <div id="colorCarousel-{{ loop.index }}" class="carousel slide" data-bs-ride="false">
+    <div class="carousel-inner">
+      {% for i in range(0, bookquery|length, 6) %}
+      <div class="carousel-item {% if loop.index == 1 %}active{% endif %}">
+        <div class="row p-3">
+          {% for book in bookquery[i:i+6] %}
+          <a href="{{ url_for('bookdetail', book_id=book.id) }}" class="col-12 col-sm-6 col-md-4 col-lg-2 mb-2">
+            <img src="{{ url_for('bookcover', cover_path=book.bookcover) }}" class="d-block" alt="Sin Portada"
+              onerror="this.onerror=null; this.src='bookcover/default.png'"
+              style="height: 200px; width: 150px; margin: auto; margin-bottom: 20px; box-shadow: 7px 7px 7px rgba(0, 0, 0, 0.4);">
+            {% set status = book.get_state() %}
+            <div
+              style="margin: auto; text-align: center; background: linear-gradient(to bottom, {{ status.top_color }} 0%, {{ status.bottom_color }} 100%); width: 160px; height: 40px; border-radius: 12px; box-shadow: 7px 7px 7px rgba(0, 0, 0, 0.4);">
+              {{ status.state }}
+            </div>
+          </a>
+          {% endfor %}
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    <button class="carousel-control-prev" type="button" data-bs-target="#colorCarousel-{{ loop.index }}" data-bs-slide="prev">
+      <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+      <span class="visually-hidden">Previous</span>
+    </button>
+    <button class="carousel-control-next" type="button" data-bs-target="#colorCarousel-{{ loop.index }}" data-bs-slide="next">
+      <span class="carousel-control-next-icon" aria-hidden="true"></span>
+      <span class="visually-hidden">Next</span>
+    </button>
+  </div>
+</div>
+{% endfor %}
+
+<div class="conteiner"></div>
+<!--<script src="{{ url_for('static', filename='script.js') }}"></script>-->
+{% endblock %}

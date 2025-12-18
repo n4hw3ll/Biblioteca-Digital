@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% block head %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap.min.css') }}"/>
+    <link rel="stylesheet" href="{{ url_for('static', filename='main.css') }}"/>
+    <script src="{{ url_for('static', filename='jquery-3.7.1.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='bootstrap.bundle.min.js') }}"></script>
+    <title>{% block title %}{% endblock %} - Biblioteca Digital</title>
+    {% endblock %}
+</head>
+<body>
+    <nav class="navbar">
+        <div style="width: 75em; margin: 0px auto;">
+            <ul>
+                {% block navlinks %}
+                    <a href="{{ url_for('index') }}" class="navbar-brand">Biblioteca Digital</a>
+                {% if current_user.is_authenticated %}
+                    <a href="{{ url_for('userdetail', user_id=current_user.id) }}" class="navbar-link">[Mis Libros]</a>
+                    <a href="{{ url_for('logout') }}" class="navbar-link">[Cerrar Sesión]</a>
+                    {% if current_user.role_id == 2 %}
+                        <a href="{{ url_for('admin.index') }}" class="navbar-link">[ADMIN]</a>
+                    {% endif %}
+                {% else %}
+                    <a href="{{ url_for('login') }}" class="navbar-link">[Iniciar Sesión]</a>
+                    <a href="{{ url_for('signup') }}" class="navbar-link">[Registrarme]</a>
+                {% endif %}
+            </ul>
+        </div>
+        {% endblock %}
+    </nav>
+    <div class="cartel" style="background-image: url('static/images/unsplash-Jayanth-Muppaneni.jpg');">
+      {{ mensaje }}
+    </div>
+    <div id="content" class="container-fluid">{% block content %}{% endblock %}</div>
+    <div id="footer">{% block footer %}{% endblock %}</div>
+</body>
+</html>

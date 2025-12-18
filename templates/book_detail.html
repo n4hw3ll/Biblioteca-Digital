@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Libro Detalles
+{% endblock %}
+
+{% block content %}
+{% for book in books %}
+    <div class="conteiner" style="border-radius: 15px;">
+        <div class="row" style="color: white;">
+            <div class="col-3" style="width: 20%;">
+                <img src="{{ url_for('bookcover', cover_path=book.bookcover) }}" class="d-block" alt="Sin Portada" onerror="this.onerror=null; this.src='bookcover/default.png'" style="height: 300px; width: 225px; margin: left; box-shadow: 7px 7px 7px rgba(0, 0, 0, 0.4);">
+            </div>
+            <div class="col" style="position: relative;">
+                <div class="conteiner-label" style="text-align: left; font-size: 40px;">{{ book.title }}</div>
+                <div style="position: absolute; bottom: 0;">
+                    <span style="text-align: left; font-size: 18px;">Autor/es:</span>
+                    {% for author in authors %}
+                        <span style="text-align: left; font-size: 18px;">{{ author.author }}</span>
+                    {% endfor %}
+                    <div style="text-align: left; font-size: 25px;">Año: {{ book.year }}</div>
+                    <div style="text-align: left; font-size: 18px;">Editorial: {{ book.editorial.editorial }}</div>
+                    <span style="text-align: left; font-size: 25px;">Genero/s:</span>
+                    {% for genre in genres %}
+                        <span style="text-align: left; font-size: 25px;">{{ genre.genre }}</span>
+                    {% endfor %}
+                    {% if book.ismissing %}
+                        <div style="text-align: left; font-size: 18px;">Esta disponible fisicamente: NO</div>
+                    {% else %}
+                        <div style="text-align: left; font-size: 18px;">Esta disponible fisicamente: SI</div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    {% if (current_user.is_authenticated and book.get_state().available) %}
+    <div class="conteiner" style="text-align: center; border-radius: 15px">
+        <button id="btn_confirm" style="border: none; width: 160px; height: 40px; border-radius: 12px; box-shadow: 7px 7px 7px rgba(0, 0, 0, 0.4);">Realizar Prestamo</button>
+        <div class="conteiner" id="cont_test" style="display: none;">
+            <form action="{{ url_for('messagelog', book_id=book.id, user_id=current_user.id) }}" method="POST">
+                <label for="semanas" style="color: white;">Duracion del prestamo:</label>
+                <select name="semana" id="semana">
+                    <option value="1">1 Semana</option>
+                    <option value="2">2 Semanas</option>
+                    <option value="3">3 Semanas</option>
+                    <option value="4">4 Semanas</option>
+                </select>
+                <input type="submit" value="Realizar Prestamo" style="border: none; width: 160px; height: 40px; border-radius: 12px; box-shadow: 7px 7px 7px rgba(0, 0, 0, 0.4);"/>
+            </form>
+            <!--<form action="{{ url_for('messagelog', book_id=book.id, user_id=current_user.id) }}" class="ventana" method="POST">
+                <input type="radio" id="semana1" name="semana" value="1" checked>1 Semana</input>
+                <input type="radio" id="semana2" name="semana" value="2">2 Semanas</input>
+                <input type="radio" id="semana3" name="semana" value="3">3 Semanas</input>
+                <input type="radio" id="semana4" name="semana" value="4">4 Semanas</input>
+                <input type="submit" value="Realizar Prestamo">
+            </form>-->
+        </div>
+    </div>
+    {% endif %}
+    {% endfor %}
+    <script>
+        var cont_test = document.getElementById("cont_test");
+        var btn_confirm = document.getElementById("btn_confirm");
+        if (cont_test && btn_confirm) {
+            btn_confirm.addEventListener("click", function(){
+                cont_test.style.display = '';
+                btn_confirm.style.display = 'none';
+            });
+        }
+    </script>
+{% endblock %}

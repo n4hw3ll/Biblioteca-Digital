@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+{% from '_formhelpers.html' import render_field %}
+
+{% block title %}
+Login
+{% endblock %}
+
+<nav class="navbar">
+    <ul>
+        {% block navlinks %}
+            <a href="{{ url_for('index') }}" class="navbar-brand">Biblioteca Digital</a>
+        {% if current_user.is_authenticated %}
+            <a href="{{ url_for('userdetail', user_id=current_user.id) }}" class="navbar-link">[Mis Libros]</a>
+            <a href="{{ url_for('logout') }}" class="navbar-link">[Cerrar Sesión]</a>
+        {% else %}
+            <a href="{{ url_for('signup') }}" class="navbar-link">[Registrarme]</a>
+        {% endif %}
+    </ul>
+        {% endblock %}
+</nav>
+
+{% block content %}
+    <form action="{{ url_for('login') }}" class="ventana" method="POST" style="color: white; height: 350px; padding-left: 35px; padding-right: 35px;">
+        <div style="font-size: 20px; padding-bottom: 20px; padding-top: 5px;">Ingrese los datos de su cuenta</div>
+        {{ render_field(form.username) }}
+        {{ render_field(form.password) }}
+        <a href="{{ url_for('requestpasswordchange') }}">Olvide Mi Contraseña</a><br>
+        <input type="submit" value="Login">
+    </form>
+    {% set flashes = get_flashed_messages() %}
+    {% if flashes %}
+    <div class="conteiner">
+        {% for message in flashes %}
+        <div style="color: white;">{{ message }}</div>
+        {% endfor %}
+    </div>
+    {% endif %}
+        <style>
+        input{
+            margin-bottom: 20px;
+            width: 100%;
+        }
+        .ventana{ 
+            width: 25em;
+        }
+        
+    </style>
+{% endblock %}
